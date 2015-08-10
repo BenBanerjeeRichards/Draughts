@@ -1,78 +1,55 @@
 import Teams
 import CheckerType
-
+import TreeNode
 
 def get_possible_moves(state, team):
-	enemy = Teams.opposite(team)
-	direction = Teams.direction(team)
-	king_row = None
+	moves = []
 
-	if direction < 0:
-		king_row = 7
-	else:
-		king_row = 0
-
-	ret_coord = []
 	for checker in state.get_team_checkers(team):
-		if checker.type == CheckerType.king():
-			direction = 0
+		root = TreeNode.TreeNode([checker.location, True])
+		_build_siblings(root, state, checker.team, checker.type)
+		moves.append([checker.location, root])
 
-		moves = _find_moves(state, checker, direction, king_row)
-		if len(moves[0]) == 0:
+	return moves
+
+def _build_siblings(node, state, team, type):
+	moves = _find_moves(state = state, location = node.data[0], team = team , type = type)
+
+	for move in moves[0]:
+		node.siblings.append(TreeNode.TreeNode([move, moves[1]]))
+
+	for sib in node.siblings:
+		if not sib.data[1]:
 			continue
-
-		if not moves[1]:
-			for move in moves[0]:
-				ret_coord.append([checker, move])
-		else:
-			# Handle multiple jumps
-			current_place = moves[0][0]
-			coord_history = [checker[1], current_place]
-
-			while not current_place[0] == king_row:
-				
-				new_moves = _find_moves(state, current_place, direction, team, king_row)
-
-				# PEP8 violation, but this is far more readable than 'if not new_moves'
-				if new_moves == []:
-					break
-
-				if new_moves[1]:
-					coord_history.append(new_moves[0][0])
-					current_place = new_moves[0][0]
-				else:
-					break
-
-			ret_coord.append(coord_history)
-
-	return ret_coord
-
-
-
+		_build_siblings(sib, state, team, type)
 	
-def _find_moves(state, checker, direction, king_row):
+def _find_moves(state, location, team, type):
+	direction = Teams.direction(team)
+	if type == CheckerType.king():
+		direction = 0
+
 	empty_moves = []
 	take_moves = []
 
-	enemy = Teams.opposite(checker.team)
-	diagonals = _get_diagonals(checker.location, direction)
+	enemy = Teams.opposite(team)
+	diagonals = _get_diagonals(location, direction)
 
 	for square in diagonals:
-		checker = state.get_checker_from_location(tuple(square))
+		new_checker = state.get_checker_from_location(tuple(square))
 
-		if checker == None:
+		if new_checker == None:
 			empty_moves.append(square)
-		elif checker.team == enemy:					# TODO fix this
-			dx = square[0] - checker.location[0]
-			dy = square[1] - checker.location[1]
+		elif new_checker.team == enemy:
+			dx = square[0] - location[0]
+			dy = square[1] - location[1]
 
 			new_square = (square[0] + dx, square[1] + dy)
-			
+
 			if not _valid_square(new_square):
 				continue
-			if checker == None:
+			if state.get_checker_from_location(new_square) == None:
 				take_moves.append(new_square)
-			
+
 	if not len(take_moves) == 0:
 		return (take_moves, True)
 	return (empty_moves, False)
