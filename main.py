@@ -70,8 +70,8 @@ def run():
 	game_objects.state.remove_checker((5, 2))
 	game_objects.state.remove_checker((3, 0))
 	game_objects.state.remove_checker((7, 0))
-	for move in GameAnalyser.get_possible_moves(game_objects.state, Teams.black()):
-		print move
+
+	game_objects.state.move_and_remove_checker((3, 4), (5, 2), (4, 3))
 
 	while 1:
 		board_coord = game_objects.board.get_padding()

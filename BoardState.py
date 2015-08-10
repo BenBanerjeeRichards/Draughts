@@ -20,6 +20,13 @@ class BoardState:
 		checker = self.get_checker_from_location(start_location)
 		checker.animate_move(end_location)
 
+	# TODO give this a better name
+	def move_and_remove_checker(self, start_location, end_location, delete_location):
+		checker = self.get_checker_from_location(start_location)
+		checker.animation_done_callback = self.remove_checker
+		checker.remove_checker_location = delete_location
+		checker.animate_move(end_location)
+
 	def get_team_checkers(self, team):
 		team_checkers = []
 		for checker in self.checkers:
@@ -45,4 +52,3 @@ class BoardState:
 			return None
 
 		return self.checkers[index]
-

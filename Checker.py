@@ -11,6 +11,8 @@ class Checker:
 		self.location = None
 		self.team = None
 		self.type = None
+		self.animation_done_callback = None
+		self.remove_checker_location = None
 
 		self._game_board = game_board
 		self._surface = surface
@@ -77,10 +79,12 @@ class Checker:
 
 
 	def animate_move(self, new_location):
+		self._prev_location = self.location
+
 		self.location = new_location
 		self._animation_running = True
 		new_loc = self._game_board.square_to_coord(new_location)
-		loc = self._game_board.square_to_coord(self.location)
+		loc = self._game_board.square_to_coord(self._prev_location)
 
 		self._change = [0, 0]
 		self._change[0] = new_loc[0] - loc[0]
@@ -119,13 +123,16 @@ class Checker:
 		if self._util.equal(self._checker_coords[0], loc[0], tolerence) and self._util.equal(self._checker_coords[1], loc[1], tolerence):
 			self._animation_running = False
 			self.location = self._target_location
-			return 
+
+			if not self.animation_done_callback == None:
+				self.animation_done_callback(self.remove_checker_location)
+
+				# CB must be set before each animation
+				self.animation_done_callback = None
+			return
 
 		# Acceleration
 		distance =  self._total_distance - self._util.distance(self._checker_coords, self._target_coords)
-		acceleration =  math.sin(math.pi *  (distance / self._total_distance))
-
-		#print (self._delta)
 
 		if (distance / self._total_distance) < 0.75:
 			self._delta[0] += 0.05 * self._delta[0]
