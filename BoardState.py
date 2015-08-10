@@ -1,5 +1,4 @@
 import Teams
-import BoardData
 import CheckerType
 
 class BoardState:

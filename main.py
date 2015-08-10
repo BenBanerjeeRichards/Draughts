@@ -3,7 +3,6 @@ import GameObjects
 import GameBoard
 import Checker
 import Resource
-import BoardData
 import BoardState
 import Teams
 import GameAnalyser
