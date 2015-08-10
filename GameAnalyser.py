@@ -107,6 +107,7 @@ def check_move_is_valid(moves, state, team):
 def _find_route(start_node, values):
 	current_level = 0
 	current_node = start_node
+	found_no_take = False
 
 	for val in values:
 		current_level += 1
@@ -115,6 +116,11 @@ def _find_route(start_node, values):
 		if sib == None:
 			return False
 
+		if found_no_take:
+			return False
+
+		if not sib.data[1]:
+			found_no_take = True
 		current_node = sib
 
 	return True
