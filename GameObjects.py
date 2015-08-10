@@ -9,3 +9,4 @@ class GameObjects:
 		self.state = None
 		self.menu = None
 		self.overlay = None
+		self.game = None
