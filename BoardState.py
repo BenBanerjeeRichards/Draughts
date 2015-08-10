@@ -1,6 +1,3 @@
-import Teams
-import CheckerType
-
 class BoardState:
 
 	def __init__(self, board):
@@ -22,7 +19,6 @@ class BoardState:
 	def move_checker(self, start_location, end_location):
 		checker = self.get_checker_from_location(start_location)
 		checker.animate_move(end_location)
-
 
 	def get_team_checkers(self, team):
 		team_checkers = []

@@ -13,7 +13,7 @@ def get_possible_moves(state, team):
 	return moves
 
 def _build_siblings(node, state, team, type):
-	moves = _find_moves(state = state, location = node.data[0], team = team , type = type)
+	moves = _find_moves(state=state, location=node.data[0], team=team , type=type)
 
 	for move in moves[0]:
 		node.siblings.append(TreeNode.TreeNode([move, moves[1]]))
@@ -55,11 +55,11 @@ def _find_moves(state, location, team, type):
 	return (empty_moves, False)
 
 
-
 def _get_diagonals(square, y_restrict):
 	# y_restrict: -1 implies that y can only decrease from that given in square [max 2 diagonals]
 	# 			   0 that y can increase and decrease [max 4 diagonals]
 	#			   1 that y can increase [max 2 diagonals]
+
 	coords = []
 
 	c1 = [square[0] + 1, square[1] + 1]
@@ -78,6 +78,7 @@ def _get_diagonals(square, y_restrict):
 		coords.append(c4)
 
 	return coords
+
 
 def _valid_square(square):
 	if square[0] < 0 or square[1] < 0:
