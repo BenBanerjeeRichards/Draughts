@@ -88,3 +88,79 @@ def _valid_square(square):
 		return False
 
 	return True
+
+def check_move_is_valid(moves, state, team):
+	if len(moves) < 2:
+		raise ValueError('Argument moves must have more than one item')
+
+	possible_moves = get_possible_moves(state, team)
+	current_node = None
+
+	for move in possible_moves:
+		if move[0] == moves[0]:
+			current_node = move[1]
+	if current_node == None:
+		return False
+
+	return _find_route(current_node, moves[1:])
+
+def _find_route(start_node, values):
+	current_level = 0
+	current_node = start_node
+
+	for val in values:
+		current_level += 1
+
+		sib = _find_sibling(current_node, val)
+		if sib == None:
+			return False
+
+		current_node = sib
+
+	return True
+
+
+def _find_sibling(node, value):
+	for sib in node.siblings:
+		if sib.data[0] == value:
+			return sib
+
+	return None
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
