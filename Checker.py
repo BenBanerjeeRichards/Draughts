@@ -16,7 +16,7 @@ class Checker:
 
 		self._game_board = game_board
 		self._surface = surface
-		self._res = resource
+		self.res = resource
 		self._animation_running = False
 		self._checker_coords = None
 
@@ -40,6 +40,14 @@ class Checker:
 			raise ValueError('Team must be provided')
 
 		self.type = type
+
+	@property
+	def res(self):
+		return self.res
+
+	@res.setter
+	def res(self, res):
+		self.res = res
 
 	@property
 	def team(self):
@@ -69,7 +77,7 @@ class Checker:
 		self.location = loc
 
 	def _load_resource(self):
-		self._checker = pygame.image.load(self._res.get_resource())
+		self._checker = pygame.image.load(self.res.res)
 
 		# Resize the checker
 		side_length = self._game_board.get_side_length()
