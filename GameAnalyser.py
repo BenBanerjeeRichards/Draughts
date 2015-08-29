@@ -14,19 +14,25 @@ def get_possible_moves(state, team):
 	return moves
 
 
-def _build_siblings(node, state, team, type):
-	moves = _find_moves(state=state, location=node.data[0], team=team , type=type)
+def _build_siblings(node, state, team, type, temp_deleted = []):
+	moves = _find_moves(state=state, location=node.data[0], team=team , type=type, temp_deleted=temp_deleted)
+
 
 	for move in moves[0]:
+		if moves[1]:
+			deleted = _find_deleted(move, node.data[0])
+			temp_deleted.append(deleted)
+
+
 		node.siblings.append(TreeNode.TreeNode([move, moves[1]]))
 
 	for sib in node.siblings:
 		if not sib.data[1]:
 			continue
-		_build_siblings(sib, state, team, type)
+		_build_siblings(sib, state, team, type, temp_deleted)
 
 
-def _find_moves(state, location, team, type):
+def _find_moves(state, location, team, type, temp_deleted = []):
 	direction = Teams.direction(team)
 	if type == CheckerType.king():
 		direction = 0
@@ -40,7 +46,7 @@ def _find_moves(state, location, team, type):
 	for square in diagonals:
 		new_checker = state.get_checker_from_location(tuple(square))
 
-		if new_checker == None:
+		if new_checker == None or new_checker.location in temp_deleted:
 			empty_moves.append(square)
 		elif new_checker.team == enemy:
 			dx = square[0] - location[0]
@@ -132,13 +138,17 @@ def _find_route(start_node, values):
 			start = current_node.data[0]
 			end = sib.data[0]
 
-			x = start[0] + ((end[0] - start[0]) / 2)
-			y = start[1] + ((end[1] - start[1]) / 2)
-			deleted.append((x, y))
+			deleted.append(_find_deleted(start, end))
 
 		current_node = sib
 
 	return deleted
+
+def _find_deleted(start, end):
+	x = start[0] + ((end[0] - start[0]) / 2)
+	y = start[1] + ((end[1] - start[1]) / 2)
+
+	return (x, y)
 
 
 def _find_sibling(node, value):
