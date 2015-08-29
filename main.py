@@ -92,6 +92,7 @@ def run():
 
                 pos = pygame.mouse.get_pos()
                 coord = game_objects.board.coord_to_square(pos)
+                print coord
                 game_objects.game.left_click(coord)
 
                 if game_objects.menu.is_visible():

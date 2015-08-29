@@ -26,7 +26,7 @@ class Game:
             if len(self.current_clicks) <= 1:
                 return
 
-            deleted =  GameAnalyser.check_move_is_valid(self.current_clicks,  self._state, self.current_team)
+            deleted = GameAnalyser.check_move_is_valid(self.current_clicks,  self._state, self.current_team)
 
             if deleted == False:
                  self.current_clicks = []
@@ -45,10 +45,8 @@ class Game:
 
                 del self.current_clicks[0]
 
-
-
-
-            self.current_team = Teams.opposite(self.current_team)
+            if not deleted == False:
+                self.current_team = Teams.opposite(self.current_team)
             self.current_clicks = []
             self._board_ui.clear_highlighted()
 

@@ -97,6 +97,9 @@ def check_move_is_valid(moves, state, team):
 	if len(moves) < 2:
 		raise ValueError('Argument moves must have more than one item')
 
+	if moves[1] == (5, 4) or moves[0] == (5, 4):
+		print "Indeed"
+
 	possible_moves = get_possible_moves(state, team)
 	current_node = None
 
