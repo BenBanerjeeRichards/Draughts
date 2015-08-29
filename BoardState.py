@@ -1,5 +1,6 @@
 import GameEvent
-
+import CheckerType
+import Resource
 
 class InvalidGameEventError(Exception):
 	def __init__(self):
@@ -53,6 +54,7 @@ class BoardState:
 
 
 	def move_checker(self, start_location, end_location):
+		self.king_checker(start_location)
 		event = GameEvent.GameEvent()
 		event.move(start_location, end_location)
 		self._game_event_backlog.append(event)
@@ -94,3 +96,23 @@ class BoardState:
 			return None
 
 		return self.checkers[index]
+
+	def king_checker(self, location):
+		index = self._get_checker_index_from_location(location)
+		checker = self.get_checker_from_location(location)
+		if not checker:
+			raise ValueError('No checker exists at given location')
+
+
+		if checker.type == CheckerType.king():
+			return
+
+		checker.type = CheckerType.king()
+		current_res = checker.res.res
+		new_res = Resource.Resource(current_res.replace(".png", "_king.png"))
+		checker.res = new_res
+		checker._load_resource()
+		self.checkers[index] = checker
+
+
+
