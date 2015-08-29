@@ -27,7 +27,7 @@ class Game:
                 return
 
             deleted =  GameAnalyser.check_move_is_valid(self.current_clicks,  self._state, self.current_team)
-            print deleted
+
             if deleted == False:
                  self.current_clicks = []
                  self._board_ui.clear_highlighted()

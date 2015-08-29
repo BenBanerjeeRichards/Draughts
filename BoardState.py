@@ -28,7 +28,6 @@ class BoardState:
 
 		if len(self._game_event_backlog) > 0:
 			event = self._game_event_backlog[0]
-			print "Running " + str(event)
 			del self._game_event_backlog[0]
 
 			if not event:
@@ -39,7 +38,7 @@ class BoardState:
 		if not event.delete_pos:
 			checker = self.get_checker_from_location(event.start)
 			checker.animation_done_callback = self.event_completed
-			print checker.animation_done_callback
+
 			if not event.start or not event.end:
 				raise InvalidGameEventError("Event must be a delete event or move event")
 
