@@ -108,6 +108,7 @@ def _find_route(start_node, values):
 	current_level = 0
 	current_node = start_node
 	found_no_take = False
+	deleted = []
 
 	for val in values:
 		current_level += 1
@@ -121,52 +122,23 @@ def _find_route(start_node, values):
 
 		if not sib.data[1]:
 			found_no_take = True
+		else:
+			# Figure out which piece has been taken
+			start = current_node.data[0]
+			end = sib.data[0]
+
+			x = start[0] + ((end[0] - start[0]) / 2)
+			y = start[1] + ((end[1] - start[1]) / 2)
+			deleted.append((x, y))
+
 		current_node = sib
 
-	return True
+	return deleted
 
 
 def _find_sibling(node, value):
 	for sib in node.siblings:
-		if sib.data[0] == value:
+		if list(sib.data[0]) == list(value):
 			return sib
 
 	return None
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
