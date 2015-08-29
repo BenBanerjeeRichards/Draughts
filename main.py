@@ -1,14 +1,16 @@
-import pygame
-import GameObjects
-import GameBoard
-import Checker
-import Resource
 import BoardState
-import Teams
-import GameAnalyser
+import Checker
+import CheckerType
+import Game
+import GameBoard
+import GameMode
+import GameObjects
 import Menu
 import Overlay
-import CheckerType
+import Resource
+import Teams
+
+import pygame
 
 game_objects = GameObjects.GameObjects()		# TODO doesn't need to be global
 
@@ -43,10 +45,14 @@ def init():
                     continue
 
             add_checker(Teams.red(), (j, i))
+    game_objects.game = Game.Game(game_objects.state, game_objects.board)
+    game_objects.game.new_game(GameMode.player_v_player())
     run()
 
 
 def add_checker(team, location):
+    if location == (4, 0) or location == (7, 0):
+        return
     red_checker = Resource.Resource("res/checker_red.png")
     black_checker = Resource.Resource("res/checker_black.png")
     res = None
@@ -64,18 +70,10 @@ def add_checker(team, location):
 
 
 def run():
-
-    game_objects.state.move_checker((4, 5), (3, 4))
-    game_objects.state.move_checker((3, 2), (4, 3))
-    game_objects.state.remove_checker((5, 2))
-    game_objects.state.remove_checker((3, 0))
-    game_objects.state.remove_checker((7, 0))
-
-    print GameAnalyser.check_move_is_valid([(3, 4), (5, 2), (3, 1)], game_objects.state, Teams.black())
+    MOUSE_BUTTON_LEFT = 1
+    MOUSE_BUTTON_RIGHT = 3
 
     while 1:
-        board_coord = game_objects.board.get_padding()
-        size = game_objects.board.get_dimentions()
         pygame.display.get_surface().fill((255, 255, 255))
 
         update()
@@ -90,15 +88,22 @@ def run():
             if event.type == pygame.QUIT:
                 return
 
-            if event.type == pygame.MOUSEBUTTONUP:
+            if event.type == pygame.MOUSEBUTTONUP and event.button == MOUSE_BUTTON_LEFT:
 
                 pos = pygame.mouse.get_pos()
-                print game_objects.board.coord_to_square(pos)
+                coord = game_objects.board.coord_to_square(pos)
+                game_objects.game.left_click(coord)
+
                 if game_objects.menu.is_visible():
                     clicked = game_objects.menu.coord_to_item(pos)
 
                     if not clicked == -1:
                         game_objects.menu.toggle()
+
+            if event.type == pygame.MOUSEBUTTONUP and event.button == MOUSE_BUTTON_RIGHT:
+                game_objects.game.right_click()
+
+
 
             if event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_ESCAPE:
