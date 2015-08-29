@@ -18,7 +18,6 @@ class Checker:
 		self._surface = surface
 		self._res = resource
 		self._animation_running = False
-		self._animation_running = False
 		self._checker_coords = None
 
 		self._util = Util.Util()
@@ -125,10 +124,8 @@ class Checker:
 			self.location = self._target_location
 
 			if not self.animation_done_callback == None:
-				self.animation_done_callback(self.remove_checker_location)
+				self.animation_done_callback()
 
-				# CB must be set before each animation
-				self.animation_done_callback = None
 			return
 
 		# Acceleration
