@@ -1,37 +1,62 @@
 import GameMode
-import Player
+import GameAnalyser
 import Teams
 
 class Game:
 
-    def __init__(self):
-        self.player1 = None
-        self.player1 = None
+    def __init__(self, state, board):
+        self.mode = None
+        self._state = state
+        self._board_ui = board
+
+        self.current_clicks = []
+        self.current_team = Teams.black()
 
     def new_game(self, mode):
-        self.player1 = Player.HumanPlayer(Teams.black())
-
-        if mode == GameMode.player_v_player():
-            self.player2 = Player.HumanPlayer(Teams.red())
-        else:
-            self.player2 = Player.AIPlayer(Teams.red())
-
+        self.mode = mode
         self.current_team = Teams.black()
 
     def left_click(self, coord):
-        if self.current_team == Teams.black():
-            self.player1.add_move(coord)
-
-        if self.current_team == Teams.red() and self.mode == GameMode.player_v_player():
-            self.player2.add_move(coord)
+        if self._is_human_player():
+            self.current_clicks.append(coord)
+            self._board_ui.add_square_highlight(coord)
 
     def right_click(self):
+        if self._is_human_player():
+            if len(self.current_clicks) <= 1:
+                return
+
+            deleted =  GameAnalyser.check_move_is_valid(self.current_clicks,  self._state, self.current_team)
+            print deleted
+            if deleted == False:
+                 self.current_clicks = []
+                 self._board_ui.clear_highlighted()
+
+            while (len(self.current_clicks)) > 1:
+                start = self.current_clicks[0]
+                end = self.current_clicks[1]
+
+                if len(deleted) > 0:
+                    self._state.move_checker(start, end)
+                    self._state.remove_checker(deleted[0])
+                    del deleted[0]
+                else:
+                    self._state.move_checker(start, end)
+
+                del self.current_clicks[0]
+
+
+
+
+            self.current_team = Teams.opposite(self.current_team)
+            self.current_clicks = []
+            self._board_ui.clear_highlighted()
+
+    def _is_human_player(self):
         if self.current_team == Teams.black():
-            self.player1.confirm()
+            return True
 
-        if self.current_team == Teams.red() and self.mode == GameMode.player_v_player():
-            self.player2.confirm()
-
-
+        # Previous condition => the team is red -> only human if in PvP
+        return self.mode == GameMode.player_v_player()
 
 
