@@ -2,6 +2,7 @@ import Teams
 import CheckerType
 import TreeNode
 
+
 def get_possible_moves(state, team):
 	moves = []
 
@@ -11,6 +12,7 @@ def get_possible_moves(state, team):
 		moves.append([checker.location, root])
 
 	return moves
+
 
 def _build_siblings(node, state, team, type):
 	moves = _find_moves(state=state, location=node.data[0], team=team , type=type)
@@ -22,7 +24,8 @@ def _build_siblings(node, state, team, type):
 		if not sib.data[1]:
 			continue
 		_build_siblings(sib, state, team, type)
-	
+
+
 def _find_moves(state, location, team, type):
 	direction = Teams.direction(team)
 	if type == CheckerType.king():
@@ -51,8 +54,8 @@ def _find_moves(state, location, team, type):
 				take_moves.append(new_square)
 
 	if not len(take_moves) == 0:
-		return (take_moves, True)
-	return (empty_moves, False)
+		return take_moves, True
+	return empty_moves, False
 
 
 def _get_diagonals(square, y_restrict):
@@ -89,6 +92,7 @@ def _valid_square(square):
 
 	return True
 
+
 def check_move_is_valid(moves, state, team):
 	if len(moves) < 2:
 		raise ValueError('Argument moves must have more than one item')
@@ -103,6 +107,7 @@ def check_move_is_valid(moves, state, team):
 		return False
 
 	return _find_route(current_node, moves[1:])
+
 
 def _find_route(start_node, values):
 	current_level = 0
