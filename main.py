@@ -26,10 +26,8 @@ def init():
 
     game_objects.board = board
 
-    game_objects.state = BoardState.BoardState(board)
     game_objects.overlay = Overlay.Overlay(screen, game_objects.board, False)
-    game_objects.overlay = Overlay.Overlay(screen, game_objects.board, False)
-
+    game_objects.state = BoardState.BoardState(board, game_objects.overlay)
 
     for i in range(3):
         for j in range(8):

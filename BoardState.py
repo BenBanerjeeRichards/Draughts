@@ -1,6 +1,7 @@
 import GameEvent
 import CheckerType
 import Resource
+import Teams
 
 class InvalidGameEventError(Exception):
 	def __init__(self):
@@ -9,12 +10,20 @@ class InvalidGameEventError(Exception):
 
 class BoardState:
 
-	def __init__(self, board):
+	def __init__(self, board, overlay):
 		self._board = board
 
 		self.checkers = []
 		self._game_event_backlog = []
 		self.event_running = False
+
+		self.max_checkers_per_side = 12
+		self.black_checkers = self.red_checkers = self.max_checkers_per_side
+		self.red_kings = 0
+		self.black_kings = 0
+
+		self.overlay = overlay
+		self.update_stats()
 
 	@property
 	def checkers(self):
@@ -49,8 +58,16 @@ class BoardState:
 
 		else:
 			index = self._get_checker_index_from_location(event.delete_pos)
+
+			if self.checkers[index].team == Teams.red():
+				self.red_checkers -= 1
+			else:
+				self.black_checkers -= 1
+
 			del self.checkers[index]
 			self.event_completed()
+
+		self.update_stats()
 
 
 	def move_checker(self, start_location, end_location):
@@ -60,7 +77,6 @@ class BoardState:
 
 		if not self.event_running:
 			self.event_completed()
-
 
 	def remove_checker(self, location):
 		event = GameEvent.GameEvent()
@@ -102,9 +118,13 @@ class BoardState:
 		if not checker:
 			raise ValueError('No checker exists at given location')
 
-
 		if checker.type == CheckerType.king():
 			return
+
+		if checker.team == Teams.red():
+			self.red_kings += 1
+		else:
+			self.black_kings += 1
 
 		checker.type = CheckerType.king()
 		current_res = checker.res.res
@@ -113,5 +133,7 @@ class BoardState:
 		checker._load_resource()
 		self.checkers[index] = checker
 
-
+	def update_stats(self):
+		self.overlay.set_stats(Teams.red(), [self.red_checkers, self.red_kings, self.max_checkers_per_side - self.black_checkers])
+		self.overlay.set_stats(Teams.black(), [self.black_checkers, self.black_kings, self.max_checkers_per_side - self.red_checkers])
 
