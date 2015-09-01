@@ -54,7 +54,6 @@ class BoardState:
 
 
 	def move_checker(self, start_location, end_location):
-		self.king_checker(start_location)
 		event = GameEvent.GameEvent()
 		event.move(start_location, end_location)
 		self._game_event_backlog.append(event)
