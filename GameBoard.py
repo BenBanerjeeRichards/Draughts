@@ -68,6 +68,9 @@ class GameBoard():
 		pygame.draw.rect(self._surface, (0, 0, 0), (x, y, width, height), 2)
 
 	def _draw_highlight(self, square):
+		if not square:
+			return
+
 		HIGHLIGHT_BORDER = 6
 
 		rect1_height = self._side_length
