@@ -8,7 +8,7 @@ def get_possible_moves(state, team):
 
 	for checker in state.get_team_checkers(team):
 		root = TreeNode.TreeNode([checker.location, True])
-		_build_siblings(root, state, checker.team, checker.type)
+		_build_siblings(root, state, checker.team, checker.type, [])
 		moves.append([checker.location, root])
 
 	return moves
@@ -48,6 +48,7 @@ def _find_moves(state, location, team, type, temp_deleted = []):
 
 		if new_checker == None or new_checker.location in temp_deleted:
 			empty_moves.append(square)
+			continue
 		elif new_checker.team == enemy:
 			dx = square[0] - location[0]
 			dy = square[1] - location[1]
